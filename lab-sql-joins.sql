@@ -1,16 +1,17 @@
 USE sakila;
 
-SELECT
-category_id,
-COUNT(film_id) as num_films
-FROM film_category
-GROUP BY category_id;
+SELECT name as categoria, 
+count(*) as num_films
+FROM category
+JOIN film_category USING (category_id)
+GROUP BY name;
 
 
 -- store_id y address_id en store
 -- address_id y city_id en address
 -- city_id, city y country_ id en city
 -- country_id y country en country
+
 
 SELECT 
 st.store_id,
@@ -27,20 +28,22 @@ ON ad.address_id = st.address_id;
 SELECT *
 FROM store;
 
-SELECT
-st.store_id,
-SUM(pay.amount)
-FROM store AS st
-LEFT JOIN payment AS pay
-ON st.manager_staff_id = pay.staff_id
-GROUP BY st.store_id;
+SELECT 
+store.store_id, 
+SUM(payment.amount) AS total_revenue
+FROM store
+JOIN staff 
+ON store.store_id = staff.store_id
+JOIN payment 
+ON staff.staff_id = payment.staff_id
+GROUP BY store.store_id;
 
 SELECT *
 FROM film_category;
 
 SELECT
 c.name,
-AVG(length) AS avg_length
+ROUND(AVG(length),2) AS avg_length
 FROM film AS f
 INNER JOIN film_category AS fc
 ON f.film_id = fc.film_id
@@ -51,7 +54,7 @@ ORDER BY avg_length DESC;
 
 SELECT
 c.name,
-AVG(length) AS avg_length
+ROUND(AVG(length),2) AS avg_length
 FROM film AS f
 INNER JOIN film_category AS fc
 ON f.film_id = fc.film_id
